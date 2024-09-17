@@ -1,0 +1,21 @@
+# Указываем базовый образ
+FROM python:3.10-slim
+
+# Устанавливаем рабочую директорию в контейнере
+WORKDIR /app
+
+# Копируем файл зависимостей
+COPY requirements.txt /app/
+
+# Устанавливаем зависимости
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем все файлы проекта в контейнер
+COPY . /app/
+
+# Экспортируем переменные окружения
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Команда для запуска Celery
+CMD ["celery", "-A", "djangotest", "worker", "--loglevel=info","-P", "solo"]
